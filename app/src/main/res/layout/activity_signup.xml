@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:background="@drawable/bg"
+tools:context=".MainActivity"
+android:padding="30dp">
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Sign Up"
+    android:textColor="@android:color/white"
+    android:textSize="50sp"
+    android:layout_marginTop="40dp"
+    android:layout_marginBottom="40dp"/>
+
+<EditText
+    android:id="@+id/signup_name"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="Enter Name"
+    android:paddingLeft="5dp"
+    android:paddingBottom="15dp"
+    android:layout_marginBottom="10dp"
+    android:textColor="@android:color/white"/>
+
+<EditText
+    android:id="@+id/signup_id"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="Enter id"
+    android:paddingLeft="5dp"
+    android:paddingBottom="15dp"
+    android:layout_marginBottom="10dp"
+    android:textColor="@android:color/white"/>
+
+<EditText
+    android:id="@+id/signup_pass"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="Enter password"
+    android:paddingLeft="5dp"
+    android:paddingBottom="15dp"
+    android:layout_marginBottom="10dp"
+    android:textColor="@android:color/white"
+    android:password="true"/>
+
+<EditText
+    android:id="@+id/signup_repass"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="Confirm password"
+    android:paddingLeft="5dp"
+    android:paddingBottom="15dp"
+    android:layout_marginBottom="10dp"
+    android:textColor="@android:color/white"
+    android:password="true"/>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:textColor="@android:color/white"
+            android:text="User"/>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:text="Admin"/>
+
+    </RadioGroup>
+
+<Button
+    android:id="@+id/signup_btn"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Sign Up"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="50dp"
+    android:textSize="15sp"
+    android:paddingHorizontal="10dp"
+    android:textColor="@android:color/white"
+    android:textAllCaps="false"
+    android:background="@drawable/btn"/>
+
+<TextView
+    android:id="@+id/login_txt"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Already member, Login Here!!"
+    android:textColor="@android:color/white"
+    android:gravity="center_horizontal"
+    android:layout_marginTop="20dp"
+    />
+
+</LinearLayout>
