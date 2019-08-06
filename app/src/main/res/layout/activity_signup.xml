@@ -33,11 +33,12 @@ android:padding="30dp">
     android:id="@+id/signup_id"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:hint="Enter id"
+    android:hint="Enter Mob No"
     android:paddingLeft="5dp"
     android:paddingBottom="15dp"
     android:layout_marginBottom="10dp"
-    android:textColor="@android:color/white"/>
+    android:textColor="@android:color/white"
+    android:inputType="phone"/>
 
 <EditText
     android:id="@+id/signup_pass"
@@ -62,6 +63,7 @@ android:padding="30dp">
     android:password="true"/>
 
     <RadioGroup
+        android:id="@+id/radio_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -69,12 +71,14 @@ android:padding="30dp">
         android:gravity="center_horizontal">
 
         <RadioButton
+            android:id="@+id/user_role"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:textColor="@android:color/white"
             android:text="User"/>
         <RadioButton
+            android:id="@+id/admin_rule"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"

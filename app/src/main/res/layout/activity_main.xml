@@ -23,12 +23,12 @@
         android:id="@+id/login_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter id"
+        android:hint="Enter Mob No"
         android:paddingLeft="5dp"
         android:paddingBottom="15dp"
         android:layout_marginBottom="20dp"
-        android:textColor="@android:color/white"/>
-
+        android:textColor="@android:color/white"
+        android:inputType="phone"/>
     <EditText
         android:id="@+id/login_pass"
         android:layout_width="match_parent"

@@ -8,10 +8,12 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import com.example.android.letsvote.Model.Data;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -21,6 +23,10 @@ public class SignupActivity extends AppCompatActivity {
     private EditText repassView;
     private Button signupBtn;
     private TextView loginTxt;
+
+    private RadioGroup radioGroup;
+    private RadioButton userRadio;
+    private RadioButton adminRadio;
 
     private ProgressDialog dialog;
 
@@ -38,6 +44,10 @@ public class SignupActivity extends AppCompatActivity {
         signupBtn = findViewById(R.id.signup_btn);
         loginTxt = findViewById(R.id.login_txt);
 
+        radioGroup = findViewById(R.id.radio_group);
+        userRadio = findViewById(R.id.user_role);
+        adminRadio = findViewById(R.id.admin_rule);
+
         dialog = new ProgressDialog(this);
 
         signupBtn.setOnClickListener(new View.OnClickListener() {
@@ -47,6 +57,7 @@ public class SignupActivity extends AppCompatActivity {
                 String signupId = signupIdView.getText().toString().trim();
                 String pass = passView.getText().toString().trim();
                 String repass = repassView.getText().toString().trim();
+                String role = null;
 
                 if(TextUtils.isEmpty(signupName)) {
                     signupNameView.setError("Required..");
@@ -64,9 +75,27 @@ public class SignupActivity extends AppCompatActivity {
                     repassView.setError("Password Does not match");
                     return;
                 }
+                if(radioGroup.getCheckedRadioButtonId() == -1) {
+                    Toast.makeText(getApplicationContext(), "Please select your role...", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if(userRadio.isChecked()) {
+                    role = "User";
+                } else {
+                    role = "Admin";
+                }
+
+                Data data = new Data(signupId, signupName, pass, role);
                 dialog.setMessage("Processing..");
-                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                 dialog.show();
+                if (role.equals("User")) {
+                    startActivity(new Intent(getApplicationContext(), UserViewActivity.class));
+                    dialog.dismiss();
+                }
+                else {
+                    startActivity(new Intent(getApplicationContext(), AdminViewActivity.class));
+                    dialog.dismiss();
+                }
+
             }
         });
 

@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
                 progressDialog.setMessage("Processing..");
                 progressDialog.show();
-                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+//                startActivity(new Intent(getApplicationContext(), AdminViewActivity.class));
             }
         });
 

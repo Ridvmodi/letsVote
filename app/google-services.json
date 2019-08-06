@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "944792190629",
+    "firebase_url": "https://letsvote-bc7ce.firebaseio.com",
+    "project_id": "letsvote-bc7ce",
+    "storage_bucket": "letsvote-bc7ce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:944792190629:android:4b0573de856ddbe8",
+        "android_client_info": {
+          "package_name": "com.example.android.letsvote"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "944792190629-8d5o555faud0neb00me1hdjrep7t8e7a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBE3MLQ-fjG2pOkfo9os2_bAxbIfMNsNv4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "944792190629-8d5o555faud0neb00me1hdjrep7t8e7a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
