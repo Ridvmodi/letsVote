@@ -38,10 +38,12 @@ public class MainActivity extends AppCompatActivity {
 
                 if(TextUtils.isEmpty(loginId)) {
                     loginIdView.setError("Required..");
+                    loginIdView.requestFocus();
                     return;
                 }
                 if(TextUtils.isEmpty(pass)) {
                     passView.setError("Required..");
+                    passView.requestFocus();
                     return;
                 }
 
