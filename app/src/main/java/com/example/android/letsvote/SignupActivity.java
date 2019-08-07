@@ -36,8 +36,8 @@ public class SignupActivity extends AppCompatActivity {
 
     private EditText signupNameView;
     private EditText signupIdView;
-    private EditText passView;
-    private EditText repassView;
+    private EditText emailView;
+    private EditText aadharView;
     private Button signupBtn;
     private TextView loginTxt;
     private String role;
@@ -64,8 +64,8 @@ public class SignupActivity extends AppCompatActivity {
 
         signupNameView = findViewById(R.id.signup_name);
         signupIdView = findViewById(R.id.signup_id);
-        passView = findViewById(R.id.signup_pass);
-        repassView = findViewById(R.id.signup_repass);
+        emailView = findViewById(R.id.email_id);
+        aadharView = findViewById(R.id.aadhar_no);
         signupBtn = findViewById(R.id.signup_btn);
         loginTxt = findViewById(R.id.login_txt);
 
@@ -125,8 +125,8 @@ public class SignupActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String signupName = signupNameView.getText().toString().trim();
                 String signupId = signupIdView.getText().toString().trim();
-                String pass = passView.getText().toString().trim();
-                String repass = repassView.getText().toString().trim();
+                String email = emailView.getText().toString().trim();
+                String aadharNo = aadharView.getText().toString().trim();
                 role = null;
 
                 if(TextUtils.isEmpty(signupName)) {
@@ -141,18 +141,18 @@ public class SignupActivity extends AppCompatActivity {
                     signupIdView.setError("Enter a valid Mobno..");
                     signupIdView.requestFocus();
                     return;
-                } if(TextUtils.isEmpty(pass)) {
-                    passView.setError("Required..");
-                    passView.requestFocus();
+                } if(TextUtils.isEmpty(email)) {
+                    emailView.setError("Required..");
+                    emailView.requestFocus();
                     return;
-                } if(TextUtils.isEmpty(repass)) {
-                    repassView.setError("Required..");
-                    repassView.requestFocus();
+                } else if(email.matches("^(.+)@(.+)\\.(.+)")) {
+                    emailView.setError("Please enter a valid email..");
+                    emailView.requestFocus();
                     return;
-                } else if (!pass.equals(repass)) {
-                    repassView.setError("Password Does not match");
-                    repassView.requestFocus();
-                    return;
+                } if(TextUtils.isEmpty(aadharNo)) {
+                        aadharView.setError("Required..");
+                        aadharView.requestFocus();
+                        return;
                 }
                 if(radioGroup.getCheckedRadioButtonId() == -1) {
                     Toast.makeText(getApplicationContext(), "Please select your role...", Toast.LENGTH_SHORT).show();
@@ -163,7 +163,7 @@ public class SignupActivity extends AppCompatActivity {
                     role = "Admin";
                 }
 
-                Data data = new Data(signupId, signupName, pass, role);
+                Data data = new Data(signupId, signupName, email, role, aadharNo);
                 dialog.setMessage("Processing..");
                 dialog.show();
 
@@ -190,7 +190,6 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 verifyOtp();
-                otpDialog.dismiss();
             }
         });
 
@@ -211,7 +210,7 @@ public class SignupActivity extends AppCompatActivity {
         }
 
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(codeSent, code);
-
+        otpDialog.dismiss();
         signInWithPhoneAuthCredential(credential);
 
     }
@@ -231,7 +230,7 @@ public class SignupActivity extends AppCompatActivity {
                         dialog.dismiss();
                     }
                 } else {
-
+                    Toast.makeText(getApplicationContext(),"Wrong credentials", Toast.LENGTH_LONG).show();
                 }
 
             }

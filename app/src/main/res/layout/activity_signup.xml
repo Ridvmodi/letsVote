@@ -27,7 +27,9 @@ android:padding="30dp">
     android:paddingLeft="5dp"
     android:paddingBottom="15dp"
     android:layout_marginBottom="10dp"
-    android:textColor="@android:color/white"/>
+    android:textColor="@android:color/white"
+    android:textColorHint="@android:color/white"
+    />
 
 <EditText
     android:id="@+id/signup_id"
@@ -38,28 +40,33 @@ android:padding="30dp">
     android:paddingBottom="15dp"
     android:layout_marginBottom="10dp"
     android:textColor="@android:color/white"
+    android:textColorHint="@android:color/white"
+
     android:inputType="phone"/>
 
 <EditText
-    android:id="@+id/signup_pass"
+    android:id="@+id/email_id"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:hint="Enter password"
+    android:hint="Enter email id"
     android:paddingLeft="5dp"
     android:paddingBottom="15dp"
     android:layout_marginBottom="10dp"
     android:textColor="@android:color/white"
+    android:textColorHint="@android:color/white"
     android:password="true"/>
 
 <EditText
-    android:id="@+id/signup_repass"
+    android:id="@+id/aadhar_no"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:hint="Confirm password"
+    android:hint="Enter Aadhar No"
     android:paddingLeft="5dp"
     android:paddingBottom="15dp"
     android:layout_marginBottom="10dp"
     android:textColor="@android:color/white"
+    android:textColorHint="@android:color/white"
+
     android:password="true"/>
 
     <RadioGroup

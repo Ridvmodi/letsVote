@@ -4,14 +4,16 @@ public class Data {
 
     private String userId;
     private String userName;
-    private String userPass;
+    private String userEmail;
     private String userRole;
+    private String userAAdharNo;
 
-    public Data(String userId, String userName, String userPass, String userRole) {
+    public Data(String userId, String userName, String userPass, String userRole, String userAAdharNo) {
         this.userId = userId;
         this.userName = userName;
-        this.userPass = userPass;
+        this.userEmail = userPass;
         this.userRole = userRole;
+        this.userAAdharNo = userAAdharNo;
     }
 
     public String getUserId() {
@@ -30,12 +32,12 @@ public class Data {
         this.userName = userName;
     }
 
-    public String getUserPass() {
-        return userPass;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setUserPass(String userPass) {
-        this.userPass = userPass;
+    public void setUserEmail(String userEmail) {
+        this.userEmail= userEmail;
     }
 
     public String getUserRole() {
@@ -44,5 +46,13 @@ public class Data {
 
     public void setUserRole(String userRole) {
         this.userRole = userRole;
+    }
+
+    public String getUserAAdharNo() {
+        return userAAdharNo;
+    }
+
+    public void setUserAAdharNo(String userAAdharNo) {
+        this.userAAdharNo = userAAdharNo;
     }
 }
