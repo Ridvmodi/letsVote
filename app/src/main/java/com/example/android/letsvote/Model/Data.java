@@ -7,13 +7,15 @@ public class Data {
     private String userEmail;
     private String userRole;
     private String userAAdharNo;
+    private String key;
 
-    public Data(String userId, String userName, String userPass, String userRole, String userAAdharNo) {
+    public Data(String userId, String userName, String userPass, String userRole, String userAAdharNo, String key) {
         this.userId = userId;
         this.userName = userName;
         this.userEmail = userPass;
         this.userRole = userRole;
         this.userAAdharNo = userAAdharNo;
+        this.key = key;
     }
 
     public String getUserId() {
@@ -54,5 +56,13 @@ public class Data {
 
     public void setUserAAdharNo(String userAAdharNo) {
         this.userAAdharNo = userAAdharNo;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

@@ -53,21 +53,19 @@ android:padding="30dp">
     android:paddingBottom="15dp"
     android:layout_marginBottom="10dp"
     android:textColor="@android:color/white"
-    android:textColorHint="@android:color/white"
-    android:password="true"/>
+    android:textColorHint="@android:color/white"/>
 
 <EditText
     android:id="@+id/aadhar_no"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:hint="Enter Aadhar No"
+    android:inputType="number"
     android:paddingLeft="5dp"
     android:paddingBottom="15dp"
     android:layout_marginBottom="10dp"
     android:textColor="@android:color/white"
-    android:textColorHint="@android:color/white"
-
-    android:password="true"/>
+    android:textColorHint="@android:color/white"/>
 
     <RadioGroup
         android:id="@+id/radio_group"

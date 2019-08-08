@@ -27,8 +27,11 @@ import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.concurrent.TimeUnit;
 
@@ -57,6 +60,9 @@ public class SignupActivity extends AppCompatActivity {
     private EditText otpField;
     private Button otpSubmitBtn;
 
+    private DatabaseReference mDataBase;
+    private FirebaseUser mUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +82,8 @@ public class SignupActivity extends AppCompatActivity {
         dialog = new ProgressDialog(this);
 
         mAuth = FirebaseAuth.getInstance();
+        mDataBase = FirebaseDatabase.getInstance().getReference();
+        mDataBase.keepSynced(true);
 
         //Creating the otp view
         mDialog = new AlertDialog.Builder(this);
@@ -99,7 +107,7 @@ public class SignupActivity extends AppCompatActivity {
 
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
 
-                    signupIdView.setError("Invalid phone number.");
+                    signupIdView.setError("Invalid phone number...");
 
                 } else if (e instanceof FirebaseTooManyRequestsException) {
 
@@ -145,7 +153,7 @@ public class SignupActivity extends AppCompatActivity {
                     emailView.setError("Required..");
                     emailView.requestFocus();
                     return;
-                } else if(email.matches("^(.+)@(.+)\\.(.+)")) {
+                } else if(!email.matches("^(.+)@(.+)\\.(.+)")) {
                     emailView.setError("Please enter a valid email..");
                     emailView.requestFocus();
                     return;
@@ -163,11 +171,14 @@ public class SignupActivity extends AppCompatActivity {
                     role = "Admin";
                 }
 
-                Data data = new Data(signupId, signupName, email, role, aadharNo);
+                String id = null;
+
+                final Data data = new Data(signupId, signupName, email, role, aadharNo, id);
+
                 dialog.setMessage("Processing..");
                 dialog.show();
 
-                sendVerificationCode(signupId);
+                sendVerificationCode(signupId, data);
 
             }
         });
@@ -181,7 +192,7 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    private void sendVerificationCode(String mobNo) {
+    private void sendVerificationCode(String mobNo, final Data data) {
 
         PhoneAuthProvider.getInstance().verifyPhoneNumber(mobNo, 60, TimeUnit.SECONDS, this, mCallbacks);
         otpDialog.show();
@@ -189,13 +200,13 @@ public class SignupActivity extends AppCompatActivity {
         otpSubmitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                verifyOtp();
+                verifyOtp(data);
             }
         });
 
     }
 
-    private void verifyOtp() {
+    private void verifyOtp(Data data) {
 
         code = otpField.getText().toString().trim();
 
@@ -211,16 +222,19 @@ public class SignupActivity extends AppCompatActivity {
 
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(codeSent, code);
         otpDialog.dismiss();
-        signInWithPhoneAuthCredential(credential);
+        signInWithPhoneAuthCredential(credential, data);
 
     }
 
-    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential, final Data data) {
         mAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 
                 if(task.isSuccessful()) {
+                    String userId = mAuth.getCurrentUser().getUid();
+                    data.setKey(userId);
+                    mDataBase.child(userId).setValue(data);
                     if (role.equals("User")) {
                         startActivity(new Intent(getApplicationContext(), UserViewActivity.class));
                         dialog.dismiss();

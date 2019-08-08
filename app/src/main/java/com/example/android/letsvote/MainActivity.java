@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.letsvote.Model.Data;
+import com.firebase.client.Firebase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
@@ -22,8 +24,15 @@ import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.TimeUnit;
 
@@ -35,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
     private FirebaseAuth mAuth;
+    private DatabaseReference mDataBase;
 
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private String codeSent;
@@ -55,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
 
         mAuth = FirebaseAuth.getInstance();
+        mDataBase = FirebaseDatabase.getInstance().getReference();
+        mDataBase.keepSynced(true);
 
         mDialog = new AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -81,6 +93,9 @@ public class MainActivity extends AppCompatActivity {
 
                 } else if (e instanceof FirebaseTooManyRequestsException) {
 
+
+                    otpDialog.dismiss();
+
                     Snackbar.make(findViewById(android.R.id.content), "Quota exceeded.",
                             Snackbar.LENGTH_SHORT).show();
 
@@ -99,7 +114,10 @@ public class MainActivity extends AppCompatActivity {
         };
 
         if(mAuth.getCurrentUser() != null) {
-            startActivity(new Intent(getApplicationContext(), AdminViewActivity.class));
+
+            String userId = mAuth.getCurrentUser().getUid();
+            startActivityOnLogin(userId);
+
         }
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
@@ -111,10 +129,10 @@ public class MainActivity extends AppCompatActivity {
                     loginIdView.setError("Required..");
                     loginIdView.requestFocus();
                     return;
+                } else if(loginId.length() < 10) {
+                    loginIdView.setError("Please enter valid Mobno..");
+                    loginIdView.requestFocus();
                 }
-
-                progressDialog.setMessage("Processing..");
-                progressDialog.show();
 
                 sendVerificationCode(loginId);
             }
@@ -129,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void sendVerificationCode(String mobNo) {
+    private void sendVerificationCode(final String mobNo) {
 
         PhoneAuthProvider.getInstance().verifyPhoneNumber(mobNo, 60, TimeUnit.SECONDS, this, mCallbacks);
         otpDialog.show();
@@ -137,6 +155,8 @@ public class MainActivity extends AppCompatActivity {
         otpSubmitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.setMessage("Processing..");
+                progressDialog.show();
                 verifyOtp();
             }
         });
@@ -169,14 +189,11 @@ public class MainActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
 
                 if(task.isSuccessful()) {
-//                    if (role.equals("User")) {
-//                        startActivity(new Intent(getApplicationContext(), UserViewActivity.class));
-//                        dialog.dismiss();
-//                    }
-//                    else {
-//                        startActivity(new Intent(getApplicationContext(), AdminViewActivity.class));
-//                        dialog.dismiss();
-//                    }
+
+                    String userId = mAuth.getCurrentUser().getUid();
+
+                    startActivityOnLogin(userId);
+
                 } else {
                     Toast.makeText(getApplicationContext(),"Wrong credentials", Toast.LENGTH_LONG).show();
                 }
@@ -185,5 +202,29 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void startActivityOnLogin(String userId) {
+        Query query = FirebaseDatabase.getInstance().getReference()
+                .child(userId)
+                .orderByChild("userRole")
+                .equalTo("User");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    startActivity(new Intent(getApplicationContext(), UserViewActivity.class));
+                    progressDialog.dismiss();
+                    return;
+                } else {
+                    startActivity(new Intent(getApplicationContext(), AdminViewActivity.class));
+                    progressDialog.dismiss();
+                    return;
+                }
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                return;
+            }
+        });
+    }
 }
