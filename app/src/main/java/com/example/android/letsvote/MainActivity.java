@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText loginIdView;
     private Button loginBtn;
     private TextView signUpTxt;
+    private boolean isThere;
 
     private ProgressDialog progressDialog;
     private FirebaseAuth mAuth;
@@ -134,7 +136,10 @@ public class MainActivity extends AppCompatActivity {
                     loginIdView.requestFocus();
                 }
 
-                sendVerificationCode(loginId);
+                if(checkUserExistOrNot(loginId))
+                    sendVerificationCode(loginId);
+                else
+                    startActivity(new Intent(getApplicationContext(), SignupActivity.class));
             }
         });
 
@@ -226,5 +231,36 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
         });
+    }
+
+    private boolean checkUserExistOrNot(String loginId) {
+
+        Query query = FirebaseDatabase.getInstance().getReference()
+                .orderByChild("userId")
+                .equalTo(loginId);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    isThere = true;
+                    return;
+                } else {
+                    isThere = false;
+                    return;
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        return isThere;
+    }
+
+    @Override
+    public void onBackPressed() {
+        ActivityCompat.finishAffinity(MainActivity.this);
     }
 }
