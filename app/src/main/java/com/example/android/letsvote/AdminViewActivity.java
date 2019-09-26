@@ -67,7 +67,6 @@ public class AdminViewActivity extends AppCompatActivity {
         pollDescView = addPollView.findViewById(R.id.poll_desc);
         pollOptionsView = addPollView.findViewById(R.id.poll_options);
 
-
         pollAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

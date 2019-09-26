@@ -3,6 +3,7 @@ package com.example.android.letsvote;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -79,6 +80,15 @@ public class MainActivity extends AppCompatActivity {
         otpField = otpView.findViewById(R.id.enter_otp);
         otpSubmitBtn = otpView.findViewById(R.id.submit_btn);
 
+        if(mAuth.getCurrentUser() != null) {
+
+            String userId = mAuth.getCurrentUser().getUid();
+            progressDialog.setMessage("Processing..");
+            progressDialog.show();
+            startActivityOnLogin(userId);
+
+        }
+
 //        startActivityOnLogin("BlrHMJ9o6LNBSoDHv5pAHl3khtn2");
 
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -118,13 +128,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-
-        if(mAuth.getCurrentUser() != null) {
-
-            String userId = mAuth.getCurrentUser().getUid();
-            startActivityOnLogin(userId);
-
-        }
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -231,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void startActivityOnLogin(String userId) {
+    protected void startActivityOnLogin(String userId) {
         mDataBase.child(userId).child("userRole")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
