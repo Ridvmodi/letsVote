@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText loginIdView;
     private Button loginBtn;
     private TextView signUpTxt;
-    private boolean isThere;
+    private boolean isThere = false;
 
     private ProgressDialog progressDialog;
     private FirebaseAuth mAuth;
@@ -78,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
         otpField = otpView.findViewById(R.id.enter_otp);
         otpSubmitBtn = otpView.findViewById(R.id.submit_btn);
 
+//        startActivityOnLogin("BlrHMJ9o6LNBSoDHv5pAHl3khtn2");
+
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
             @Override
@@ -91,13 +94,14 @@ public class MainActivity extends AppCompatActivity {
 
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
 
+                    progressDialog.dismiss();
+                    otpDialog.dismiss();
                     loginIdView.setError("Invalid phone number.");
 
                 } else if (e instanceof FirebaseTooManyRequestsException) {
 
-
+                    progressDialog.dismiss();
                     otpDialog.dismiss();
-
                     Snackbar.make(findViewById(android.R.id.content), "Quota exceeded.",
                             Snackbar.LENGTH_SHORT).show();
 
@@ -125,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String loginId = loginIdView.getText().toString().trim();
+                final String loginId = loginIdView.getText().toString().trim();
 
                 if(TextUtils.isEmpty(loginId)) {
                     loginIdView.setError("Required..");
@@ -134,12 +138,29 @@ public class MainActivity extends AppCompatActivity {
                 } else if(loginId.length() < 10) {
                     loginIdView.setError("Please enter valid Mobno..");
                     loginIdView.requestFocus();
+                    return;
                 }
 
-                if(checkUserExistOrNot(loginId))
-                    sendVerificationCode(loginId);
-                else
-                    startActivity(new Intent(getApplicationContext(), SignupActivity.class));
+                // Checking user already exists or not
+
+                mDataBase.orderByChild("userId")
+                        .equalTo(loginId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        if (dataSnapshot.exists()) {
+                            isThere = true;
+                            sendVerificationCode(loginId);
+                        } else {
+                            isThere = false;
+                            startActivity(new Intent(getApplicationContext(), SignupActivity.class));
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
 
@@ -173,10 +194,12 @@ public class MainActivity extends AppCompatActivity {
         code = otpField.getText().toString().trim();
 
         if(TextUtils.isEmpty(code)) {
+            progressDialog.dismiss();
             otpField.setError("Required..");
             otpField.requestFocus();
             return;
         } else if(code.length() < 6) {
+            progressDialog.dismiss();
             otpField.setError("Enter valid otp..");
             otpField.requestFocus();
             return;
@@ -200,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivityOnLogin(userId);
 
                 } else {
+                    progressDialog.dismiss();
                     Toast.makeText(getApplicationContext(),"Wrong credentials", Toast.LENGTH_LONG).show();
                 }
 
@@ -208,20 +232,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startActivityOnLogin(String userId) {
-        Query query = FirebaseDatabase.getInstance().getReference()
-                .child(userId)
-                .orderByChild("userRole")
-                .equalTo("User");
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        mDataBase.child(userId).child("userRole")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
-                    startActivity(new Intent(getApplicationContext(), UserViewActivity.class));
+                if(dataSnapshot.getValue().equals("User")) {
                     progressDialog.dismiss();
+                    startActivity(new Intent(getApplicationContext(), UserViewActivity.class));
                     return;
                 } else {
-                    startActivity(new Intent(getApplicationContext(), AdminViewActivity.class));
                     progressDialog.dismiss();
+                    startActivity(new Intent(getApplicationContext(), AdminViewActivity.class));
                     return;
                 }
             }
@@ -231,32 +252,6 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
         });
-    }
-
-    private boolean checkUserExistOrNot(String loginId) {
-
-        Query query = FirebaseDatabase.getInstance().getReference()
-                .orderByChild("userId")
-                .equalTo(loginId);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
-                    isThere = true;
-                    return;
-                } else {
-                    isThere = false;
-                    return;
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        return isThere;
     }
 
     @Override

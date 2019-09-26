@@ -90,7 +90,7 @@ public class SignupActivity extends AppCompatActivity {
         //Creating the otp view
         mDialog = new AlertDialog.Builder(this);
         LayoutInflater inflater = LayoutInflater.from(this);
-        View otpView = inflater.inflate(R.layout.layout_otp, null);
+        final View otpView = inflater.inflate(R.layout.layout_otp, null);
         mDialog.setView(otpView);
         otpDialog = mDialog.create();
         otpField = otpView.findViewById(R.id.enter_otp);
@@ -109,9 +109,12 @@ public class SignupActivity extends AppCompatActivity {
 
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
 
+                    otpDialog.dismiss();
                     signupIdView.setError("Invalid phone number...");
 
                 } else if (e instanceof FirebaseTooManyRequestsException) {
+
+                    otpDialog.dismiss();
 
                     Snackbar.make(findViewById(android.R.id.content), "Quota exceeded.",
                             Snackbar.LENGTH_SHORT).show();

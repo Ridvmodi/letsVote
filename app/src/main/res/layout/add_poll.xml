@@ -47,6 +47,7 @@
                 android:layout_marginBottom="15dp"/>
 
             <EditText
+                android:id="@+id/poll_options"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter comma separated options for poll"
@@ -58,7 +59,7 @@
                 />
 
             <Button
-                android:id="@+id/add_btn"
+                android:id="@+id/poll_add_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Add"
