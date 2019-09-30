@@ -1,5 +1,6 @@
 package com.example.android.letsvote;
 
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -12,12 +13,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.android.letsvote.Model.PollData;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AdminViewActivity extends AppCompatActivity {
 
@@ -105,14 +113,27 @@ public class AdminViewActivity extends AppCompatActivity {
             return;
         }
 
-        String pollOptions[] = pollOptionsString.split(",");
-
+        pollOptionsString += ",";
+        ArrayList<String> pollOptions = new ArrayList<>();
+        pollOptions.addAll(Arrays.asList(pollOptionsString.split(",")));
         String pollId = mDatabase.push().getKey();
         String currentUserId = mAuth.getCurrentUser().getUid();
 
-        PollData pollData = new PollData(pollId, pollName, pollDesc, pollOptions, currentUserId, null);
+        PollData pollData = new PollData(pollId, pollName, pollDesc, pollOptions, currentUserId);
 
-        mDatabase.child(pollId).setValue(pollData);
+        mDatabase.child(pollId).setValue(pollData, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if(databaseError != null) {
+                    Toast.makeText(AdminViewActivity.this, "Error Occurred", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(AdminViewActivity.this, "Poll Added Successfully", Toast.LENGTH_SHORT).show();
+                    pollNameView.setText("");
+                    pollDescView.setText("");
+                    pollOptionsView.setText("");
+                }
+            }
+        });
 
         mDialog.dismiss();
     }

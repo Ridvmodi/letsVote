@@ -1,21 +1,21 @@
 package com.example.android.letsvote.Model;
 
+import java.util.ArrayList;
+
 public class PollData {
 
     private String pollId;
     private  String pollName;
     private String pollDesc;
-    private String[] pollOptions;
+    private ArrayList<String> pollOptions;
     private String createdBy;
-    private String[] responsedBy;
 
-    public PollData(String pollId, String pollName, String pollDesc, String[] pollOptions, String createdBy, String[] responsedBy) {
+    public PollData(String pollId, String pollName, String pollDesc, ArrayList<String> pollOptions, String createdBy) {
         this.pollId = pollId;
         this.pollName = pollName;
         this.pollDesc = pollDesc;
         this.pollOptions = pollOptions;
         this.createdBy = createdBy;
-        this.responsedBy = responsedBy;
     }
 
     public String getPollId() {
@@ -42,11 +42,11 @@ public class PollData {
         this.pollDesc = pollDesc;
     }
 
-    public String[] getPollOptions() {
+    public ArrayList<String> getPollOptions() {
         return pollOptions;
     }
 
-    public void setPollOptions(String[] pollOptions) {
+    public void setPollOptions(ArrayList<String> pollOptions) {
         this.pollOptions = pollOptions;
     }
 
@@ -58,11 +58,4 @@ public class PollData {
         this.createdBy = createdBy;
     }
 
-    public String[] getResponsedBy() {
-        return responsedBy;
-    }
-
-    public void setResponsedBy(String[] responsedBy) {
-        this.responsedBy = responsedBy;
-    }
 }
