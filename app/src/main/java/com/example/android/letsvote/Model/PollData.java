@@ -10,6 +10,9 @@ public class PollData {
     private ArrayList<String> pollOptions;
     private String createdBy;
 
+    public PollData() {
+    }
+
     public PollData(String pollId, String pollName, String pollDesc, ArrayList<String> pollOptions, String createdBy) {
         this.pollId = pollId;
         this.pollName = pollName;
