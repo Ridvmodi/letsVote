@@ -10,7 +10,8 @@
         android:roundIcon="@drawable/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".PollStatusActivity"></activity>
+        <activity android:name=".MainActivity" />
         <activity android:name=".UserViewActivity" />
         <activity android:name=".AdminViewActivity" />
         <activity android:name=".SignupActivity" />
@@ -22,5 +23,7 @@
             </intent-filter>
         </activity>
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
