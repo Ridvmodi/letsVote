@@ -1,8 +1,9 @@
 package com.example.android.letsvote.Model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PollData {
+public class PollData implements Serializable {
 
     private String pollId;
     private  String pollName;

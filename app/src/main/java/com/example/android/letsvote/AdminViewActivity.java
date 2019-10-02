@@ -1,6 +1,7 @@
 package com.example.android.letsvote;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -34,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -171,7 +173,7 @@ public class AdminViewActivity extends AppCompatActivity {
                 MyViewHolder.class, mDatabase.child("Polls")
         ) {
             @Override
-            protected void populateViewHolder(final MyViewHolder viewHolder, PollData model, int position) {
+            protected void populateViewHolder(final MyViewHolder viewHolder, final PollData model, int position) {
                 viewHolder.setPollName(model.getPollName());
                 viewHolder.setPollDesc(model.getPollDesc());
 
@@ -193,8 +195,9 @@ public class AdminViewActivity extends AppCompatActivity {
                 viewHolder.myView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(AdminViewActivity.this, PollStatusActivity.class);
-                        startActivity(intent);
+                    Intent intent = new Intent(AdminViewActivity.this, PollStatusActivity.class);
+                    intent.putExtra("Data", model);
+                    startActivity(intent);
                     }
                 });
             }

@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PollStatusActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#fff">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/poll_status_toolbar"
@@ -13,7 +14,9 @@
         android:layout_height="wrap_content"
         app:titleTextColor="@android:color/white"
         android:background="@color/colorAccent"
-        android:elevation="4dp" />
+        android:elevation="4dp"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,11 +42,21 @@
         android:textColor="@android:color/tertiary_text_light"
         />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Status: "
+        android:padding="8dp"
+        android:textColor="#000"
+        android:textStyle="bold|italic"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/poll_status_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp"
+        android:layout_gravity="center_vertical"
+        android:foregroundGravity="center_vertical"
         />
 
     </LinearLayout>
