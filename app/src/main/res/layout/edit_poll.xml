@@ -19,14 +19,14 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add a new poll"
+                android:text="Edit poll"
                 android:textColor="@android:color/white"
                 android:textAppearance="?android:textAppearanceLarge"
                 android:gravity="center_horizontal"
                 android:layout_marginBottom="20dp"/>
 
             <EditText
-                android:id="@+id/poll_name"
+                android:id="@+id/edit_poll_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="20dp"
@@ -37,7 +37,7 @@
                 android:layout_marginBottom="15dp"/>
 
             <EditText
-                android:id="@+id/poll_desc"
+                android:id="@+id/edit_poll_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="20dp"
@@ -48,6 +48,7 @@
                 android:layout_marginBottom="15dp"/>
 
             <EditText
+                android:id="@+id/edit_poll_options"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter comma separated options for poll"

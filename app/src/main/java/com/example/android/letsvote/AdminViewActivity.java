@@ -1,5 +1,6 @@
 package com.example.android.letsvote;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,24 +38,36 @@ import com.google.firebase.database.ValueEventListener;
 import org.w3c.dom.Text;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.ResourceBundle;
 
 public class AdminViewActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private FloatingActionButton fabBtn;
     private AlertDialog.Builder mDialogBuilder;
+    private AlertDialog.Builder editDialogBuilder;
     private AlertDialog mDialog;
+    private AlertDialog editPollDialog;
     private Button pollAddBtn;
     private EditText pollNameView;
     private EditText pollDescView;
     private EditText pollOptionsView;
+    private EditText editPolllName;
+    private EditText editPollDesc;
+    private EditText editPollOptions;
+    private Button editBtn;
+    private Button endBtn;
+    private ProgressDialog progressDialog;
 
     private RecyclerView recyclerView;
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
+
+    private PollData editPollData = new PollData();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +87,12 @@ public class AdminViewActivity extends AppCompatActivity {
         final View addPollView = inflater.inflate(R.layout.add_poll, null);
         mDialogBuilder.setView(addPollView);
         mDialog = mDialogBuilder.create();
+
+        editDialogBuilder = new AlertDialog.Builder(this);
+        final View editPollView = inflater.inflate(R.layout.edit_poll, null);
+        editDialogBuilder.setView(editPollView);
+        editPollDialog = editDialogBuilder.create();
+        progressDialog = new ProgressDialog(this);
 
         fabBtn = findViewById(R.id.fab_btn);
 
@@ -94,6 +114,29 @@ public class AdminViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 addNewPoll();
+            }
+        });
+
+        // finding the edit poll views
+
+        editPolllName = editPollView.findViewById(R.id.edit_poll_name);
+        editPollDesc = editPollView.findViewById(R.id.edit_poll_desc);
+        editPollOptions = editPollView.findViewById(R.id.edit_poll_options);
+        editBtn = editPollView.findViewById(R.id.update_btn);
+        endBtn = editPollView.findViewById(R.id.end_btn);
+
+        endBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editPollDialog.dismiss();
+            }
+        });
+
+        editBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressDialog.setMessage("Processing..");
+                editPoll();
             }
         });
 
@@ -164,6 +207,58 @@ public class AdminViewActivity extends AppCompatActivity {
         mDialog.dismiss();
     }
 
+    private void editPoll() {
+
+        String pollName = editPolllName.getText().toString().trim();
+        String pollDesc = editPollDesc.getText().toString().trim();
+        String pollOptionsString = editPollOptions.getText().toString().trim();
+
+        if (TextUtils.isEmpty(pollName)) {
+            editPolllName.setError("Required..");
+            editPolllName.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(pollDesc)) {
+            editPollDesc.setError("Required..");
+            editPollDesc.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(pollOptionsString)) {
+            editPollOptions.setError("Required..");
+            editPollOptions.requestFocus();
+            return;
+        }
+
+        pollOptionsString += ",";
+        ArrayList<String> pollOptions = new ArrayList<>();
+        pollOptions.addAll(Arrays.asList(pollOptionsString.split(",")));
+        String currentUserId = mAuth.getCurrentUser().getUid();
+
+        String pollId = editPollData.getPollId();
+
+        PollData pollData = new PollData(pollId, pollName, pollDesc, pollOptions, currentUserId);
+
+        editPollDialog.dismiss();
+        progressDialog.show();
+
+        mDatabase.child("Polls").child(pollId).setValue(pollData, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    progressDialog.dismiss();
+                    Toast.makeText(AdminViewActivity.this, "Error Occurred", Toast.LENGTH_SHORT).show();
+                } else {
+                    progressDialog.dismiss();
+                    Toast.makeText(AdminViewActivity.this, "Poll Edited Successfully", Toast.LENGTH_SHORT).show();
+                    editPolllName.setText("");
+                    editPollDesc.setText("");
+                    editPollOptions.setText("");
+                }
+            }
+        });
+
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -198,6 +293,23 @@ public class AdminViewActivity extends AppCompatActivity {
                     Intent intent = new Intent(AdminViewActivity.this, PollStatusActivity.class);
                     intent.putExtra("Data", model);
                     startActivity(intent);
+                    }
+                });
+
+                viewHolder.myView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        editPollData = model;
+                        editPolllName.setText(editPollData.getPollName());
+                        editPollDesc.setText(editPollData.getPollDesc());
+                        String options = "";
+                        ArrayList<String> optionsList = editPollData.getPollOptions();
+                        for(String str: optionsList) {
+                            options = str + ",";
+                        }
+                        editPollOptions.setText(options);
+                        editPollDialog.show();
+                        return false;
                     }
                 });
             }

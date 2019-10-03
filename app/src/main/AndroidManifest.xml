@@ -10,7 +10,8 @@
         android:roundIcon="@drawable/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PollStatusActivity"></activity>
+        <activity android:name=".PollVotingActivity"></activity>
+        <activity android:name=".PollStatusActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".UserViewActivity" />
         <activity android:name=".AdminViewActivity" />
