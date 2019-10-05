@@ -129,6 +129,19 @@ public class AdminViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 editPollDialog.dismiss();
+                editPollData.setIsActive("false");
+                mDatabase.child("Polls").child(editPollData.getPollId()).setValue(editPollData)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()) {
+                                    Toast.makeText(AdminViewActivity.this, "Poll Ended", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    editPollData.setIsActive("true");
+                                    Toast.makeText(AdminViewActivity.this, "Error Occured", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
             }
         });
 
@@ -188,7 +201,7 @@ public class AdminViewActivity extends AppCompatActivity {
         String pollId = mDatabase.push().getKey();
         String currentUserId = mAuth.getCurrentUser().getUid();
 
-        PollData pollData = new PollData(pollId, pollName, pollDesc, pollOptions, currentUserId);
+        PollData pollData = new PollData(pollId, pollName, pollDesc, pollOptions, currentUserId, "true");
 
         mDatabase.child("Polls").child(pollId).setValue(pollData, new DatabaseReference.CompletionListener() {
             @Override
@@ -236,7 +249,7 @@ public class AdminViewActivity extends AppCompatActivity {
 
         String pollId = editPollData.getPollId();
 
-        PollData pollData = new PollData(pollId, pollName, pollDesc, pollOptions, currentUserId);
+        PollData pollData = new PollData(pollId, pollName, pollDesc, pollOptions, currentUserId, editPollData.getIsActive());
 
         editPollDialog.dismiss();
         progressDialog.show();
@@ -300,18 +313,24 @@ public class AdminViewActivity extends AppCompatActivity {
                     @Override
                     public boolean onLongClick(View v) {
                         editPollData = model;
-                        editPolllName.setText(editPollData.getPollName());
-                        editPollDesc.setText(editPollData.getPollDesc());
-                        String options = "";
-                        ArrayList<String> optionsList = editPollData.getPollOptions();
-                        for(String str: optionsList) {
-                            options = str + ",";
+                        if(editPollData.getIsActive().equals("false")) {
+                            viewHolder.myView.setOnLongClickListener(null);
+
+                        } else {
+                            editPolllName.setText(editPollData.getPollName());
+                            editPollDesc.setText(editPollData.getPollDesc());
+                            String options = "";
+                            ArrayList<String> optionsList = editPollData.getPollOptions();
+                            for (String str : optionsList) {
+                                options = str + ",";
+                            }
+                            editPollOptions.setText(options);
+                            editPollDialog.show();
                         }
-                        editPollOptions.setText(options);
-                        editPollDialog.show();
                         return false;
                     }
                 });
+
             }
         };
 

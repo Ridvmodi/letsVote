@@ -7,14 +7,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.android.letsvote.Model.PollData;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 public class PollStatusAdapter extends RecyclerView.Adapter<PollStatusAdapter.ViewHolder> {
 
-    ArrayList<String> arrayList = new ArrayList<>();
+    ArrayList<String> optionslist;
+    private DatabaseReference mDataBase;
+    private PollData pollData;
+    private int voteCount = 0;
 
-    public PollStatusAdapter(Context context, ArrayList<String> arrayList) {
-        this.arrayList = arrayList;
+    public PollStatusAdapter(Context context, PollData pollData) {
+        this.pollData = pollData;
+        this.optionslist = pollData.getPollOptions();
+        mDataBase = FirebaseDatabase.getInstance().getReference().child("Responses");
     }
 
     @Override
@@ -25,14 +37,30 @@ public class PollStatusAdapter extends RecyclerView.Adapter<PollStatusAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(PollStatusAdapter.ViewHolder viewHolder, int position) {
-        viewHolder.optionNameView.setText(arrayList.get(position).substring(0,1).toUpperCase() + arrayList.get(position).substring(1));
-        viewHolder.optionResultView.setText(String.valueOf(arrayList.size()));
+    public void onBindViewHolder(final PollStatusAdapter.ViewHolder viewHolder, final int position) {
+        viewHolder.optionNameView.setText(optionslist.get(position).substring(0,1).toUpperCase() + optionslist.get(position).substring(1));
+        mDataBase.child(pollData.getPollId()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                    if(dataSnapshot1.getValue().toString().equalsIgnoreCase(optionslist.get(position))) {
+                        voteCount++;
+                    }
+                }
+                viewHolder.optionResultView.setText(String.valueOf(voteCount));
+                voteCount = 0;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return arrayList.size();
+        return optionslist.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{

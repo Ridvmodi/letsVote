@@ -1,11 +1,13 @@
 package com.example.android.letsvote;
 
+import android.content.Intent;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import com.example.android.letsvote.Model.PollData;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -65,7 +67,7 @@ public class UserViewActivity extends AppCompatActivity {
                 AdminViewActivity.MyViewHolder.class, mDataBase.child("Polls")
         ) {
             @Override
-            protected void populateViewHolder(final AdminViewActivity.MyViewHolder viewHolder, PollData model, int position) {
+            protected void populateViewHolder(final AdminViewActivity.MyViewHolder viewHolder, final PollData model, int position) {
             viewHolder.setPollName(model.getPollName());
             viewHolder.setPollDesc(model.getPollDesc());
 
@@ -83,6 +85,15 @@ public class UserViewActivity extends AppCompatActivity {
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
+                }
+            });
+
+            viewHolder.myView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(UserViewActivity.this, PollVotingActivity.class);
+                    intent.putExtra("Data", model);
+                    startActivity(intent);
                 }
             });
 

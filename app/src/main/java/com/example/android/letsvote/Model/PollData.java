@@ -10,16 +10,18 @@ public class PollData implements Serializable {
     private String pollDesc;
     private ArrayList<String> pollOptions;
     private String createdBy;
+    private String isActive;
 
     public PollData() {
     }
 
-    public PollData(String pollId, String pollName, String pollDesc, ArrayList<String> pollOptions, String createdBy) {
+    public PollData(String pollId, String pollName, String pollDesc, ArrayList<String> pollOptions, String createdBy, String isActive) {
         this.pollId = pollId;
         this.pollName = pollName;
         this.pollDesc = pollDesc;
         this.pollOptions = pollOptions;
         this.createdBy = createdBy;
+        this.isActive = isActive;
     }
 
     public String getPollId() {
@@ -61,5 +63,9 @@ public class PollData implements Serializable {
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
+
+    public String getIsActive() { return isActive; }
+
+    public void setIsActive(String isActive) { this.isActive = isActive; }
 
 }
